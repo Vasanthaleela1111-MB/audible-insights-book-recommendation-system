@@ -5,7 +5,7 @@ import numpy
 import pickle
 import seaborn as sns
 
-df=pd.read_csv(r'C:\AIML\Projects\Intelligent Book Recomendation System\clean.csv')
+df=pd.read_csv('clean.csv')
 with open("model.pkl","rb") as f:
     model=pickle.load(f)
 
