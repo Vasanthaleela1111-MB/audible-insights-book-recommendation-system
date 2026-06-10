@@ -17,6 +17,8 @@ def download_file(file_id, output):
         gdown.download(url, output, quiet=False)
 download_file("1Bocy4oUQXW-jcPc6AimOtYI6wNU0i37n/view?usp=sharingW", "books.pkl")
 
+with open("books.pkl","rb") as f:
+    similarity=pickle.load(f)
 with open("model.pkl","rb") as f:
     model=pickle.load(f)  
 with open("books_df.pkl", "rb") as f:
