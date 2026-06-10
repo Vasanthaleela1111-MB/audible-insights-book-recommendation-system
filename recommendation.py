@@ -5,16 +5,48 @@ import numpy
 import pickle
 import seaborn as sns
 
-df=pd.read_csv('clean.csv')
-with open("model.pkl","rb") as f:
-    model=pickle.load(f)
+df=pd.read_csv(r'C:\AIML\Projects\Intelligent Book Recomendation System\clean.csv')
+df = df.reset_index(drop=True)
+with open("books.pkl","rb") as f:
+    similarity=pickle.load(f)   
 
+with open("model.pkl","rb") as f:
+    model=pickle.load(f)  
+with open("books_df.pkl", "rb") as f:
+    df = pickle.load(f)
+     
 st.set_page_config(
     page_title="Audible Insights",
     page_icon="📚",
     layout="wide",
     initial_sidebar_state="expanded"
 )
+
+def recommend(book_name):
+
+    idx = df[df["Book Name"] == book_name].index[0]
+
+    distances = list(enumerate(similarity[idx]))
+
+    similar_books = sorted(
+        distances,
+        key=lambda x: x[1],
+        reverse=True
+    )[1:6]
+
+    recommendations = []
+
+    for i in similar_books:
+
+        recommendations.append(
+            {
+                "Book Name": df.iloc[i[0]]["Book Name"],
+                "Author": df.iloc[i[0]]["Author"],
+                "Rating": df.iloc[i[0]]["Rating"]
+            }
+        )
+
+    return pd.DataFrame(recommendations)
 
 st.sidebar.title("Navigation")
 
@@ -345,32 +377,35 @@ if page == "📘 Project Introduction":
         a recommendation-ready database for analytics
         and personalized book recommendations.
         """)
-
 elif page == "🔍 Book Recommendations":
 
-    st.title("📚 Explore Books")
+    st.title("📚 Book Recommendation System")
 
-    authors = sorted(df["Book Name"].dropna().unique())
-    selected_author = st.selectbox(
-        "✍️ Select an Book",
-        authors
+    books = sorted(df["Book Name"].dropna().unique())
+
+    selected_book = st.selectbox(
+        "📖 Select a Book",
+        books
     )
 
-    author_books = df[df["Book Name"] == selected_author].drop_duplicates(subset=["Book Name"])
+    selected_info = df[df["Book Name"] == selected_book].iloc[0]
 
-    st.success(f"Book Selected: {selected_author}")
+    st.success(f"Selected Book: {selected_book}")
 
-    st.subheader("📖 Books by this Author")
+    st.write(f"✍️ Author: {selected_info['Author']}")
+    st.write(f"⭐ Rating: {selected_info['Rating']}")
 
-    display_df = author_books[
-        ["Book Name","Author", "Rating", "Number of Reviews"]
-    ].reset_index(drop=True)
+    if st.button("🚀 Recommend Similar Books"):
 
-    st.dataframe(
-        display_df,
-        use_container_width=True,
-        hide_index=True
-    )
+        recommendations = recommend(selected_book)
+
+        st.subheader("📚 Top 5 Similar Books")
+
+        st.dataframe(
+            recommendations,
+            use_container_width=True,
+            hide_index=True
+        )
 
 elif page == "📊 Analytics Dashboard":
 
