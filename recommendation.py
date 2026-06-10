@@ -4,11 +4,18 @@ import pandas as pd
 import numpy
 import pickle
 import seaborn as sns
+import gdown
+import os
+base_path = os.path.dirname(__file__)
 
 df=pd.read_csv(r'C:\AIML\Projects\Intelligent Book Recomendation System\clean.csv')
 df = df.reset_index(drop=True)
-with open("books.pkl","rb") as f:
-    similarity=pickle.load(f)   
+@st.cache_data
+def download_file(file_id, output):
+    if not os.path.exists(output):
+        url = f"https://drive.google.com/uc?id={file_id}"
+        gdown.download(url, output, quiet=False)
+download_file("1Bocy4oUQXW-jcPc6AimOtYI6wNU0i37n/view?usp=sharingW", "books.pkl")
 
 with open("model.pkl","rb") as f:
     model=pickle.load(f)  
