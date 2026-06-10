@@ -15,7 +15,7 @@ def download_file(file_id, output):
     if not os.path.exists(output):
         url = f"https://drive.google.com/uc?id={file_id}"
         gdown.download(url, output, quiet=False)
-download_file("1Bocy4oUQXW-jcPc6AimOtYI6wNU0i37n/view?usp=sharingW", "books.pkl")
+download_file("1Bocy4oUQXW-jcPc6AimOtYI6wNU0i37n", "books.pkl")
 
 with open("books.pkl","rb") as f:
     similarity=pickle.load(f)
