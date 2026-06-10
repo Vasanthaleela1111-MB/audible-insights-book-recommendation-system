@@ -8,7 +8,7 @@ import gdown
 import os
 base_path = os.path.dirname(__file__)
 
-df=pd.read_csv(r'C:\AIML\Projects\Intelligent Book Recomendation System\clean.csv')
+df=pd.read_csv('clean.csv')
 df = df.reset_index(drop=True)
 @st.cache_data
 def download_file(file_id, output):
